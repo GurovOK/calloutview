@@ -194,9 +194,15 @@ NSTimeInterval const kSMCalloutViewRepositionDelayForUIScrollView = 1.0/3.0;
     return self.calloutContainerHeight + self.backgroundView.anchorHeight;
 }
 
+- (CGSize)contentViewSize {
+    [self.contentView setNeedsLayout];
+    [self.contentView layoutIfNeeded];
+    return [self.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
+}
+
 - (CGFloat)calloutContainerHeight {
     if (self.contentView)
-        return self.contentView.frameHeight + self.contentViewInset.bottom + self.contentViewInset.top;
+        return [self contentViewSize].height + self.contentViewInset.bottom + self.contentViewInset.top;
     else if (self.subtitleView || self.subtitle.length > 0)
         return CALLOUT_SUB_DEFAULT_CONTAINER_HEIGHT;
     else
@@ -224,7 +230,7 @@ NSTimeInterval const kSMCalloutViewRepositionDelayForUIScrollView = 1.0/3.0;
     if (self.contentView) {
         
         // if we have a content view, then take our preferred size directly from that
-        preferredWidth = self.contentView.frameWidth + margin;
+        preferredWidth = [self contentViewSize].width + margin;
     }
     else if (preferredTitleSize.width >= 0.000001 || preferredSubtitleSize.width >= 0.000001) {
         
